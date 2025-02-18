@@ -42,9 +42,14 @@ const usePagination = ({
     if (isReachedToFirst || getAllPreviousPages().length < 1) {
       return [];
     }
-    return pages
-      .slice(0, edgePageCount)
-      .filter((p) => !middlePages.includes(p));
+
+    const leftEdgePages = pages.slice(0, edgePageCount);
+    const firstMiddlePage = middlePages[0];
+    const leftEdgePagesBeforeMiddle = leftEdgePages.filter(
+      (page) => page < firstMiddlePage,
+    );
+
+    return leftEdgePagesBeforeMiddle;
   }, [currentPage, pages]);
 
   const getAllNextPages = React.useMemo(() => {
@@ -61,9 +66,17 @@ const usePagination = ({
     if (getAllNextPages.length < 1) {
       return [];
     }
-    return pages
-      .slice(pages.length - edgePageCount, pages.length)
-      .filter((p) => !middlePages.includes(p));
+
+    const rightEdgePages = pages.slice(
+      pages.length - edgePageCount,
+      pages.length,
+    );
+    const lastMiddlePage = middlePages[middlePages.length - 1];
+    const rightEdgePagesAfterMiddle = rightEdgePages.filter(
+      (page) => page > lastMiddlePage,
+    );
+
+    return rightEdgePagesAfterMiddle;
   }, [middlePages, pages]);
 
   const isPreviousTruncable = React.useMemo(() => {
